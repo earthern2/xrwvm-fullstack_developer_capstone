@@ -81,14 +81,20 @@ app.get('/fetchDealers/:state', async (req, res) => {
 // Express route to fetch dealer by a particular id
 app.get('/fetchDealer/:id', async (req, res) => {
 //Write your code here
-  try {
-    const dealer = await Dealerships.findById(req.params.id);
+try {
+    const { id } = req.params;
+
+    // Query using the custom "id" field (not the MongoDB _id)
+    const dealer = await Dealerships.findOne({ id: id });
+
     if (!dealer) {
       return res.status(404).json({ error: 'Dealer not found' });
     }
+
     res.json(dealer);
+
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching document' });
+    res.status(500).json({ error: 'Error fetching document', details: error.message });
   }
 });
 
